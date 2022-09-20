@@ -1,0 +1,31 @@
+:root {
+    --tableBG: #c0c0c0;
+    /* --cellBorder: #ffffff20; */
+    --white: #ffffff;
+}
+
+body {
+    background-color: var(--tableBG);
+}
+
+table {
+    width: 100%;
+    /* border-collapse: collapse; */
+}
+
+/* td {
+    border: 1px solid var(--cellBorder);
+} */
+
+input,
+select {
+    background-color: var(--tableBG);
+}
+
+#tooltip {
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 13px;
+}
