@@ -44,16 +44,16 @@ function getUserInputs(userInput) {
         propertyValue: userInput[0].value,
         nominalYearly: userInput[1].value,
         avaliation: userInput[2].value,
-        financedValue: userInput[4].value,
-        cetYearly: userInput[5].value,
-        itbi: userInput[6].value,
-        term: userInput[7].value,
-        efectiveYearly: userInput[8].value,
-        initialDate: userInput[9].value,
-        registry: userInput[10].value,
-        mip: userInput[11].value,
-        dfi: userInput[12].value,
-        tsa: userInput[13].value
+        financedValue: userInput[3].value,
+        cetYearly: userInput[4].value,
+        itbi: userInput[5].value,
+        term: userInput[6].value,
+        efectiveYearly: userInput[7].value,
+        initialDate: userInput[8].value,
+        registry: userInput[9].value,
+        mip: userInput[10].value,
+        dfi: userInput[11].value,
+        tsa: userInput[12].value
     }
 }
 
