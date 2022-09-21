@@ -132,7 +132,7 @@ function calcBills (bills = []) {
 };
 
 function fillData() {
-    let totalDue = 0 , totalQuota = 0, totalReduction = 0, totalRate = 0, totalTrValue = 0, totalMip = 0, totalDfi = 0, totalTsa = 0, totalPayed = 0;
+    let totalDue = 0 , totalQuota = 0, totalAntecips = 0, totalReductions = 0, totalRate = 0, totalTrValue = 0, totalMip = 0, totalDfi = 0, totalTsa = 0, totalPayed = 0;
     if (userContract) {    
         let row = 0;
         while (bills[row].balance >= 0) {
@@ -151,7 +151,8 @@ function fillData() {
             
             totalDue        += Number(bills[row].total);
             totalQuota      += Number(bills[row].quota);
-            totalReduction  += Number(bills[row].reduction);
+            totalAntecips   += Number(bills[row].extraPayments);
+            totalReductions += Number(bills[row].reduction);
             totalRate       += Number(bills[row].rateValue);
             totalTrValue    += Number(bills[row].trValue);
             totalMip        += Number(bills[row].mip);
@@ -168,7 +169,8 @@ function fillData() {
 
     TDtotalDue.innerHTML = totalDue.toFixed(2); 
     TDtotalQuota.innerHTML = totalQuota.toFixed(2);
-    TDtotalReduction.innerHTML = totalReduction.toFixed(2);
+    TDtotalAntecips.innerHTML = totalAntecips.toFixed(2);
+    TDtotalReductions.innerHTML = totalReductions.toFixed(0);
     TDtotalRate.innerHTML = totalRate.toFixed(2);
     TDtotalTrValue.innerHTML = totalTrValue.toFixed(2);
     TDtotalMip.innerHTML = totalMip.toFixed(2);
