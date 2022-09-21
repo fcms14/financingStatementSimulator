@@ -22,10 +22,12 @@ function loadUserData() {
         term.value  = userContract.term;
         registry.value  = userContract.registry;
     }
+
     return userContract;
 }
 
 function getUserInputs() {
+
     return {
         nominalYearly: nominalYearly.value,
         mip: mip.value,
@@ -41,7 +43,7 @@ function getUserInputs() {
     }
 }
 
-function createTableRows(){
+function createTableRows() {
 	const table	= expected;
     const rows  = userContract ? userContract.term : 0;
     table.innerHTML = "";
@@ -89,7 +91,7 @@ function calcBills (bills = []) {
         balanceDue    = rowData.newBalance + trValue - extraPayments;
 
         const reduction = bills[i] ? 
-            method  == "term" ? 
+            method  == "term" && extraPayments > 0 ? 
                 Math.floor((terms - i - 1) - (balanceDue / (rowData.total - (balanceDue * ((nominalYearly.value / 12) / 100)))))
                 :  
                 0
@@ -117,7 +119,7 @@ function calcBills (bills = []) {
             reduction,
             paymentDate,
             payedValue
-        }
+        };
 
         if (bills[i]) {
             bills[i] = bill;
@@ -128,8 +130,9 @@ function calcBills (bills = []) {
     }
 
     userSheetLocal.add(bills);
+    
     return bills;
-};
+}
 
 function fillData() {
     let totalDue = 0 , totalQuota = 0, totalAntecips = 0, totalReductions = 0, totalRate = 0, totalTrValue = 0, totalMip = 0, totalDfi = 0, totalTsa = 0, totalPayed = 0;
@@ -184,7 +187,7 @@ function setInputs() {
         expected.rows[row].cells[8].innerHTML  = `<input type='number' name="tr" min="0" value=${bills[row].tr.toFixed(8)} id="${row}"> </input>`;
         expected.rows[row].cells[5].innerHTML  = `<input  type='number' name="extraPayments" min="0" value=${bills[row].extraPayments.toFixed(2)} id="${row}"> </input>`;
         expected.rows[row].cells[4].innerHTML  = `<select id='method-${row}' name="methods"> <option value='cut' ${bills[row].method == "cut" ? 'selected' : ''}> Redução </option> <option value="term" ${bills[row].method == "term" ? 'selected' : ''}> Prazo </option> </select>`;
-        expected.rows[row].cells[15].innerHTML = `<input  name="paymentDate" type='date' id="${row}" value="${bills[row].paymentDate ?? ''}"> </input>`; // bills[row].paymentDate ? bills[row].paymentDate.toLocaleDateString() : 
+        expected.rows[row].cells[15].innerHTML = `<input  name="paymentDate" type='date' id="${row}" value="${bills[row].paymentDate ?? ''}"> </input>`;
         expected.rows[row].cells[16].innerHTML = `<input  name="payedValue" type='number' min="0" value=${Number(bills[row].payedValue).toFixed(2)} id="${row}"> </input>`;
     }
 
@@ -248,7 +251,7 @@ function setInputs() {
     }
 }
 
-function updateTable(){
+function updateTable() {
     if (confirm("Você tem certeza que deseja atualizar os dados? \nEsta ação apagará os valores inseridos na tabela abaixo.")) {
         userContractLocal.add(getUserInputs());
         userContract = loadUserData();
@@ -257,11 +260,10 @@ function updateTable(){
         fillData();
         setInputs();
     }
-
 }
 
 createTableRows();
 fillData();
 setInputs();
 
-update.addEventListener('click', updateTable)
+update.addEventListener('click', updateTable);
