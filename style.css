@@ -1,31 +1,49 @@
 :root {
-    --tableBG: #c0c0c0;
-    /* --cellBorder: #ffffff20; */
-    --white: #ffffff;
+    --bodyBG:   #e0f7fa;
+    --tableBG1: #ffffff;
+    --tableBG2: #e0f7fa;
+    --headBG:   #4dd0e1;
+    --transp:   #fffff100;
+    --gray:     #333;
 }
 
 body {
-    background-color: var(--tableBG);
+    background-color: var(--tableBG1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 table {
-    width: 100%;
-    /* border-collapse: collapse; */
+    border-collapse: collapse;
 }
-
-/* td {
-    border: 1px solid var(--cellBorder);
-} */
 
 input,
 select {
-    background-color: var(--tableBG);
+    background-color: var(--transp);
+    outline: 0;
+    border-width: 0 0 2px;
+    border-color: var(--gray);
 }
 
 #tooltip {
-    background-color: #333;
+    background-color: var(--gray);
     color: white;
     padding: 5px 10px;
     border-radius: 4px;
     font-size: 13px;
+}
+
+tr:nth-child(even){
+    background-color: var(--tableBG1);
+}
+
+tr:nth-child(odd){
+    background-color: var(--tableBG2);
+}
+
+#headBackGround {
+    background-color: var(--headBG);
+    border: 1px solid var(--gray);
 }

@@ -11,65 +11,39 @@
 <body>
     <table>
         <tr>
-            <th> Indíce Correção Parcela </th>
-            <th> 
-                <select name="indice"> 
-                    <option value="TR"> TR </option> 
-                </select> 
-            </th>
-            <th> Taxas </th>
-            <th> % (a.a.) </th>
-            <th> % (a.m.) </th>
-            <th> Saldo Devedor Atual </th>
-            <th colspan="2"> Demais Custos </th>
+            <th> Juros Nominal % (a.a.) </th>
+            <td> <input type="number" min="0" name="nominalYearly" id="nominalYearly"> </td>
+            <th title="Morte ou Invalidez Permanente"> MIP* </th>
+            <td> <input type="number" min="0" name="mip" id="mip"> </td>
+            <th> </th>
+        </tr>
+        <tr>
+            <th title="Danos Físico ao imóvel"> DFI* </th>
+            <td> <input type="number" min="0" name="dfi" id="dfi"> </td>
+            <th title="Taxa de Serviço Administrativo"> TSA* </th>
+            <td> <input type="number" min="0" name="tsa" id="tsa"> </td>
+            <th> </th>
         </tr>
         <tr>
             <th> Valor Imóvel </th>
-            <td> <input type="number" min="0" name="propertyValue"> </td>
-            <th> Nominal </th>
-            <td> <input type="number" min="0" name="nominalYearly" id="nominalYearly"> </td>
-            <td id="nominalMonthly"> </td>
-            <td> R$ </td>
+            <td> <input type="number" min="0" name="propertyValue" id="propertyValue"> </td>
             <th> Avaliação </th>
-            <td> <input type="number" min="0" name="avaliation"> </td>
+            <td> <input type="number" min="0" name="avaliation" id="avaliation"> </td>
+            <th> Data Início </th>
         </tr>
         <tr>
             <th> Valor Financiado </th>
-            <td> <input type="number" min="0" name="financedValue"> </td>
-            <th> CET </th>
-            <td> <input type="number" min="0" name="cetYearly" id="cetYearly"> </td>
-            <td id="cetMonthly"> </td>
-            <th> Data Início </th>
+            <td> <input type="number" min="0" name="financedValue" id="financedValue"> </td>
             <th> ITBI </th>
-            <td> <input type="number" min="0" name="itbi"> </td>
+            <td> <input type="number" min="0" name="itbi" id="itbi"> </td>
+            <td> <input type="date" name="initialDate" id="initialDate"> </td>
         </tr>
         <tr>
             <th> Prazo </th>
-            <td> <input type="number" min="0" name="term"> </td>
-            <th> Efetiva </th>
-            <td> <input type="number" min="0" name="efectiveYearly" id="efectiveYearly" > </td>
-            <td id="efectiveMonthly"> </td>
-            <td> <input type="date"   name="initialDate"> </td>
+            <td> <input type="number" min="0" name="term" id="term"> </td>
             <th> Cartório </th>
-            <td> <input type="number" min="0" name="registry"> </td>
-        </tr>
-        <tr>
-            <th title="Morte ou Invalidez Permanente"> MIP* </th>
-            <td> <input type="number" min="0" name="mip"> </td>
-            <th title="Danos Físico ao imóvel"> DFI* </th>
-            <td> <input type="number" min="0" name="dfi"> </td>
-            <th title="Taxa de Serviço Administrativo"> TSA* </th>
-            <td> <input type="number" min="0" name="tsa"> </td>
+            <td> <input type="number" min="0" name="registry" id="registry"> </td>
             <td> <button id="update"> Atualizar </button> </td>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-            <td> </td>
         </tr>
     </table>
     <hr>
@@ -78,25 +52,23 @@
             <tr>
                 <td> <strong> Totais </strong> </td>
                 <td> </td>
-                <td> R$ </td>
-                <td> R$ </td>
+                <td id="TDtotalDue"> </td>
+                <td id="TDtotalQuota"> </td>
                 <td> </td>
-                <td> R$ </td>
+                <td id="TDtotalReduction"> </td>
                 <td> </td>
-                <td> R$ </td>
+                <td id="TDtotalRate"> </td>
                 <td> </td>
-                <td> R$ </td>
-                <td> R$ </td>
-                <td> R$ </td>
-                <td> R$ </td>
-                <td> R$ </td>
-                <td> R$ </td>
-                <td> R$ </td>
+                <td id="TDtotalTrValue"> </td>
+                <td id="TDtotalMip"> </td>
+                <td id="TDtotalDfi"> </td>
+                <td id="TDtotalTsa"> </td>
                 <td> </td>
                 <td> </td>
-                <td> R$ </td>
+                <td> </td>
+                <td id="TDtotalPayed"> </td>
             </tr>
-            <tr>
+            <tr id="headBackGround">
                 <th> Parcela </th>
                 <th> Data Amortização </th>
                 <th> Valor Total Parcela </th>
@@ -110,8 +82,6 @@
                 <th> Valor MIP* </th>
                 <th> Valor DFI** </th>
                 <th> Valor TSA*** </th>
-                <th> Valor Multa </th>
-                <th> Valor Mora </th>
                 <th> Saldo Devedor </th>
                 <th> Situação Parcela </th>
                 <th> Data Pagamento </th>
