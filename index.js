@@ -70,6 +70,17 @@ function billingValues(balanceDue, i, terms) {
     return { quota, mip, dfi, tsa, rateValue, total, newBalance }
 }
 
+function calcReduction(method, terms, i, balanceDue, total, quota){
+    switch (method) {
+        case "principal":
+            return Math.floor((terms - i - 1) - (balanceDue / quota));
+        case "total":
+            return Math.floor((terms - i - 1) - (balanceDue / (total - ((balanceDue * ((nominalYearly.value / 12) / 100)) + Number(userContract.tsa) + Number(userContract.dfi) + (userContract.mip * balanceDue)))));
+        case "term":
+            return 0;
+    }
+}
+
 function calcBills (bills = []) {
     let balanceDue = userContract.financedValue;
     let terms = userContract.term;
@@ -90,11 +101,8 @@ function calcBills (bills = []) {
 
         balanceDue    = rowData.newBalance + trValue - extraPayments;
 
-        const reduction = bills[i] ? 
-            method  == "term" && extraPayments > 0 ? 
-                Math.floor((terms - i - 1) - (balanceDue / (rowData.total - (balanceDue * ((nominalYearly.value / 12) / 100)))))
-                :  
-                0
+        const reduction = bills[i] && extraPayments > 0 ? 
+            calcReduction(method, terms, i, balanceDue, rowData.total, rowData.quota)
             :
             0;
 
@@ -186,7 +194,12 @@ function setInputs() {
     for (let row = 0; row < expected.rows.length; row++) {
         expected.rows[row].cells[8].innerHTML  = `<input type='number' name="tr" min="0" value=${bills[row].tr.toFixed(8)} id="${row}"> </input>`;
         expected.rows[row].cells[5].innerHTML  = `<input  type='number' name="extraPayments" min="0" value=${bills[row].extraPayments.toFixed(2)} id="${row}"> </input>`;
-        expected.rows[row].cells[4].innerHTML  = `<select id='method-${row}' name="methods"> <option value='cut' ${bills[row].method == "cut" ? 'selected' : ''}> Redução </option> <option value="term" ${bills[row].method == "term" ? 'selected' : ''}> Prazo </option> </select>`;
+        expected.rows[row].cells[4].innerHTML  = `
+            <select id='method-${row}' name="methods"> 
+                <option value='term'      title="Reduz o valor total da Parcela"                      ${bills[row].method == "term"      ? 'selected' : ''}> Manter Prazo </option> 
+                <option value='total'     title="Reduz o prazo mantendo o valor total da parcela"     ${bills[row].method == "total"     ? 'selected' : ''}> Manter Valor Total </option> 
+                <option value='principal' title="Reduz o prazo mantendo o valor principal da parcela" ${bills[row].method == "principal" ? 'selected' : ''}> Manter Valor Principal  </option> 
+            </select>`;
         expected.rows[row].cells[15].innerHTML = `<input  name="paymentDate" type='date' id="${row}" value="${bills[row].paymentDate ?? ''}"> </input>`;
         expected.rows[row].cells[16].innerHTML = `<input  name="payedValue" type='number' min="0" value=${Number(bills[row].payedValue).toFixed(2)} id="${row}"> </input>`;
     }
