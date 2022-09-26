@@ -58,15 +58,15 @@ function createTableRows() {
 }
 
 function billingValues(balanceDue, i, terms) {
-    const term        = terms - i;
-    const quota       = balanceDue / term
-    const mip         = userContract.mip * balanceDue;
-    const dfi         = Number(userContract.dfi);
-    const tsa         = Number(userContract.tsa);
-    const rateValue   = balanceDue * ((nominalYearly.value / 12) / 100);
-    const total       = (quota + rateValue + mip + dfi + tsa)
-    const newBalance  = balanceDue - quota;
-    const rateOfDue = rateValue / total;
+    const term       = terms - i;
+    const quota      = balanceDue / term
+    const mip        = userContract.mip * balanceDue;
+    const dfi        = Number(userContract.dfi);
+    const tsa        = Number(userContract.tsa);
+    const rateValue  = balanceDue * ((nominalYearly.value / 12) / 100);
+    const total      = (quota + rateValue + mip + dfi + tsa)
+    const newBalance = balanceDue - quota;
+    const rateOfDue  = rateValue / total;
     
     return { quota, mip, dfi, tsa, rateValue, rateOfDue, total, newBalance }
 }
