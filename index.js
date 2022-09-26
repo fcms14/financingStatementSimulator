@@ -51,23 +51,24 @@ function createTableRows() {
 	for (let i = 0; i < rows; i++) {
 		const row =	table.insertRow(i);
 
-        for (let cols = 0; cols < 17; cols++) {
+        for (let cols = 0; cols < 18; cols++) {
             row.insertCell(cols);
         }
 	}
 }
 
 function billingValues(balanceDue, i, terms) {
-    const term       = terms - i;
-    const quota      = balanceDue / term
-    const mip        = userContract.mip * balanceDue;
-    const dfi        = Number(userContract.dfi);
-    const tsa        = Number(userContract.tsa);
-    const rateValue  = balanceDue * ((nominalYearly.value / 12) / 100);
-    const total      = (quota + rateValue + mip + dfi + tsa)
-    const newBalance = balanceDue - quota;
-
-    return { quota, mip, dfi, tsa, rateValue, total, newBalance }
+    const term        = terms - i;
+    const quota       = balanceDue / term
+    const mip         = userContract.mip * balanceDue;
+    const dfi         = Number(userContract.dfi);
+    const tsa         = Number(userContract.tsa);
+    const rateValue   = balanceDue * ((nominalYearly.value / 12) / 100);
+    const total       = (quota + rateValue + mip + dfi + tsa)
+    const newBalance  = balanceDue - quota;
+    const rateOfDue = rateValue / total;
+    
+    return { quota, mip, dfi, tsa, rateValue, rateOfDue, total, newBalance }
 }
 
 function calcReduction(method, terms, i, balanceDue, total, quota){
@@ -116,6 +117,7 @@ function calcBills (bills = []) {
             total: rowData.total,
             quota: rowData.quota,
             rateValue: rowData.rateValue,
+            rateOfDue: rowData.rateOfDue,
             mip: rowData.mip,
             dfi: rowData.dfi,
             tsa: rowData.tsa,
@@ -153,12 +155,13 @@ function fillData() {
             expected.rows[row].cells[3].innerHTML  = bills[row].quota.toFixed(2);
             expected.rows[row].cells[6].innerHTML  = bills[row].reduction;
             expected.rows[row].cells[7].innerHTML  = bills[row].rateValue.toFixed(2);
-            expected.rows[row].cells[9].innerHTML  = bills[row].trValue.toFixed(2);
-            expected.rows[row].cells[10].innerHTML = bills[row].mip.toFixed(2);
-            expected.rows[row].cells[11].innerHTML = bills[row].dfi.toFixed(2);
-            expected.rows[row].cells[12].innerHTML = bills[row].tsa.toFixed(2);
-            expected.rows[row].cells[13].innerHTML = bills[row].balance.toFixed(2);
-            expected.rows[row].cells[14].innerHTML = bills[row].paymentDate ? "Pago" : "Em Aberto";
+            expected.rows[row].cells[8].innerHTML  = (bills[row].rateOfDue*100).toFixed(2) + '%';
+            expected.rows[row].cells[10].innerHTML = bills[row].trValue.toFixed(2);
+            expected.rows[row].cells[11].innerHTML = bills[row].mip.toFixed(2);
+            expected.rows[row].cells[12].innerHTML = bills[row].dfi.toFixed(2);
+            expected.rows[row].cells[13].innerHTML = bills[row].tsa.toFixed(2);
+            expected.rows[row].cells[14].innerHTML = bills[row].balance.toFixed(2);
+            expected.rows[row].cells[15].innerHTML = bills[row].paymentDate ? "Pago" : "Em Aberto";
             
             totalDue        += Number(bills[row].total);
             totalQuota      += Number(bills[row].quota);
@@ -188,11 +191,26 @@ function fillData() {
     TDtotalDfi.innerHTML = totalDfi.toFixed(2);
     TDtotalTsa.innerHTML = totalTsa.toFixed(2);
     TDtotalPayed.innerHTML = totalPayed.toFixed(2);
+
+    const totalPrincipalValue = Number(propertyValue.value) - Number(financedValue.value) + totalQuota + totalAntecips;
+    const totalTaxValue = Number(avaliation.value) + Number(itbi.value) + Number(registry.value);
+    const totalFessValue = totalMip + totalDfi + totalTsa + totalRate + totalTrValue; 
+    const totalGeralValue = totalPrincipalValue + totalTaxValue + totalFessValue;
+
+    totalPrincipal.innerHTML = totalPrincipalValue.toFixed(2);
+    totalTax.innerHTML = totalTaxValue.toFixed(2);
+    totalFees.innerHTML = totalFessValue.toFixed(2);
+    totalGeral.innerHTML = totalGeralValue.toFixed(2);
+
+    percentPrincipal.innerHTML = (((totalPrincipalValue / Number(propertyValue.value)) - 1) * 100).toFixed(2) + '%';
+    percentTax.innerHTML = ((totalTaxValue / Number(propertyValue.value)) * 100).toFixed(2) + '%';
+    percentFees.innerHTML = ((totalFessValue /  Number(propertyValue.value)) * 100).toFixed(2) + '%';
+    percentGeral.innerHTML = ((totalGeralValue /  Number(propertyValue.value)) * 100).toFixed(2) + '%';
 }
 
 function setInputs() { 
     for (let row = 0; row < expected.rows.length; row++) {
-        expected.rows[row].cells[8].innerHTML  = `<input type='number' name="tr" min="0" value=${bills[row].tr.toFixed(8)} id="${row}"> </input>`;
+        expected.rows[row].cells[9].innerHTML  = `<input type='number' name="tr" min="0" value=${bills[row].tr.toFixed(8)} id="${row}"> </input>`;
         expected.rows[row].cells[5].innerHTML  = `<input  type='number' name="extraPayments" min="0" value=${bills[row].extraPayments.toFixed(2)} id="${row}"> </input>`;
         expected.rows[row].cells[4].innerHTML  = `
             <select id='method-${row}' name="methods"> 
@@ -200,8 +218,8 @@ function setInputs() {
                 <option value='total'     title="Reduz o prazo mantendo o valor total da parcela"     ${bills[row].method == "total"     ? 'selected' : ''}> Manter Valor Total </option> 
                 <option value='principal' title="Reduz o prazo mantendo o valor principal da parcela" ${bills[row].method == "principal" ? 'selected' : ''}> Manter Valor Principal  </option> 
             </select>`;
-        expected.rows[row].cells[15].innerHTML = `<input  name="paymentDate" type='date' id="${row}" value="${bills[row].paymentDate ?? ''}"> </input>`;
-        expected.rows[row].cells[16].innerHTML = `<input  name="payedValue" type='number' min="0" value=${Number(bills[row].payedValue).toFixed(2)} id="${row}"> </input>`;
+        expected.rows[row].cells[16].innerHTML = `<input  name="paymentDate" type='date' id="${row}" value="${bills[row].paymentDate ?? ''}"> </input>`;
+        expected.rows[row].cells[17].innerHTML = `<input  name="payedValue" type='number' min="0" value=${Number(bills[row].payedValue).toFixed(2)} id="${row}"> </input>`;
     }
 
     const trs = document.querySelectorAll('[name="tr"]');
@@ -280,3 +298,5 @@ fillData();
 setInputs();
 
 update.addEventListener('click', updateTable);
+
+// custos bancarios (mip, dfi, tsa, juros, correções)

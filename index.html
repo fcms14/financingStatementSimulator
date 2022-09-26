@@ -11,41 +11,72 @@
 <body>
     <table>
         <tr>
-            <th> Juros Nominal % (a.a.) </th>
-            <td> <input type="number" min="0" name="nominalYearly" id="nominalYearly" value="6.7502"> </td>
-            <th title="Morte ou Invalidez Permanente"> MIP* </th>
-            <td> <input type="number" min="0" name="mip" id="mip" value="0.0001"> </td>
-            <th> </th>
-        </tr>
-        <tr>
-            <th title="Danos Físico ao imóvel"> DFI* </th>
-            <td> <input type="number" min="0" name="dfi" id="dfi" value="12.99"> </td>
-            <th title="Taxa de Serviço Administrativo"> TSA* </th>
-            <td> <input type="number" min="0" name="tsa" id="tsa" value="25"> </td>
-            <th> </th>
-        </tr>
-        <tr>
-            <th> Valor Imóvel </th>
-            <td> <input type="number" min="0" name="propertyValue" id="propertyValue" value="300000"> </td>
-            <th> Avaliação </th>
-            <td> <input type="number" min="0" name="avaliation" id="avaliation" value="3100"> </td>
-            <th> Data Início </th>
-        </tr>
-        <tr>
-            <th> Valor Financiado </th>
-            <td> <input type="number" min="0" name="financedValue" id="financedValue" value="190000"> </td>
-            <th> ITBI </th>
-            <td> <input type="number" min="0" name="itbi" id="itbi" value="4000"> </td>
-            <td> <input type="date" name="initialDate" id="initialDate" value="2021-06-01"> </td>
-        </tr>
-        <tr>
-            <th> Prazo </th>
-            <td> <input type="number" min="0" name="term" id="term" value="240"> </td>
-            <th> Cartório </th>
-            <td> <input type="number" min="0" name="registry" id="registry" value="4500"> </td>
-            <td> <button id="update"> Atualizar </button> </td>
+            <td>
+                <table>
+                    <tr>
+                        <th> Juros Nominal % (a.a.) </th>
+                        <td> <input type="number" min="0" name="nominalYearly" id="nominalYearly" value="6.7502"> </td>
+                        <th title="Morte ou Invalidez Permanente"> MIP* </th>
+                        <td> <input type="number" min="0" name="mip" id="mip" value="0.0001"> </td>
+                        <th> </th>
+                    </tr>
+                    <tr>
+                        <th title="Danos Físico ao imóvel"> DFI* </th>
+                        <td> <input type="number" min="0" name="dfi" id="dfi" value="12.99"> </td>
+                        <th title="Taxa de Serviço Administrativo"> TSA* </th>
+                        <td> <input type="number" min="0" name="tsa" id="tsa" value="25"> </td>
+                        <th> </th>
+                    </tr>
+                    <tr>
+                        <th> Valor Imóvel </th>
+                        <td> <input type="number" min="0" name="propertyValue" id="propertyValue" value="300000"> </td>
+                        <th> Avaliação </th>
+                        <td> <input type="number" min="0" name="avaliation" id="avaliation" value="3100"> </td>
+                        <th> Data Início </th>
+                    </tr>
+                    <tr>
+                        <th> Valor Financiado </th>
+                        <td> <input type="number" min="0" name="financedValue" id="financedValue" value="190000"> </td>
+                        <th> ITBI </th>
+                        <td> <input type="number" min="0" name="itbi" id="itbi" value="4000"> </td>
+                        <td> <input type="date" name="initialDate" id="initialDate" value="2021-06-01"> </td>
+                    </tr>
+                    <tr>
+                        <th> Prazo </th>
+                        <td> <input type="number" min="0" name="term" id="term" value="240"> </td>
+                        <th> Cartório </th>
+                        <td> <input type="number" min="0" name="registry" id="registry" value="4500"> </td>
+                        <td> <button id="update"> Atualizar </button> </td>
+                    </tr>
+                </table>                
+            </td>
+            <td>
+                <table class="totais">
+                    <tr>
+                        <th> Totais </th>
+                        <th id="totalGeral"> </th>
+                        <th id="percentGeral" title="Percentual em relação ao valor inicial do imóvel"> </th>
+                    </tr>
+                    <tr>
+                        <th> Entrada + Amortizações </th>
+                        <td id="totalPrincipal" title="TRs aplicadas durante o contrato afetam este valor"> </td>
+                        <td id="percentPrincipal" title="Percentual acrescido em relação ao valor inicial do imóvel"> </td>
+                    </tr>
+                    <tr>
+                        <th> Avaliação + ITBI + Cartório </th>
+                        <td id="totalTax"> </td>
+                        <td id="percentTax" title="Percentual em relação ao valor inicial do imóvel"> </td>
+                    </tr>
+                    <tr>
+                        <th> Custos Bancários <br /> (MIP, DFI, TSA, <br /> Juros, Correções) </th>
+                        <td id="totalFees"> </td>
+                        <td id="percentFees" title="Percentual em relação ao valor inicial do imóvel"> </td>
+                    </tr>
+                </table>
+            </td>
         </tr>
     </table>
+
     <hr>
     <table>
         <thead>
@@ -58,6 +89,7 @@
                 <td id="TDtotalAntecips"> </td>
                 <td id="TDtotalReductions"> </td>
                 <td id="TDtotalRate"> </td>
+                <td> </td>
                 <td> </td>
                 <td id="TDtotalTrValue"> </td>
                 <td id="TDtotalMip"> </td>
@@ -75,8 +107,9 @@
                 <th> Valor Principal </th>
                 <th> Método </th>
                 <th> Amortização Extraordinária </th>
-                <th> Redução </th>
+                <th> Parcelas Antecipadas </th>
                 <th> Valor Juros </th>
+                <th title="Composição percentual do juros referente ao valor total da parcela"> Juros/Parcela </th>
                 <th> Ind. Correção Saldo Devedor </th>
                 <th> Valor Correção Saldo Devedor </th>
                 <th> Valor MIP* </th>
